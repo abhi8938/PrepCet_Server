@@ -1,0 +1,5 @@
+{
+    "jwtPrivateKey": "prepuni_jwtPrivateKey",
+    "db":"mongodb://localhost:27017/prepuni_student_test"
+}
+  
