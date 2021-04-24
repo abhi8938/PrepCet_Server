@@ -157,10 +157,20 @@ const validateAuth = (student) => {
   return schema.validate(student);
 };
 
+const validatePassword=(student)=>{
+  const schema=Joi.object({
+    previous_password:Joi.string().required(),
+    new_password:Joi.string().required(),
+  })
+
+  return schema.validate(student)
+}
+
 // export default Student;
 module.exports={
   validateAuth,
   validateUpdate,
   validate,
+  validatePassword,
   Student
 }

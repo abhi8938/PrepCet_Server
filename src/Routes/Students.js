@@ -8,6 +8,7 @@ const {
   post_student,
   reset_password,
   update_student,
+  change_password,
 } =require("../Controllers/students");
 
 const auth=require("../Middlewares/auth")
@@ -17,6 +18,8 @@ const checkLogin=require("../Middlewares/checkLogin")
 const router = express.Router();
 
 router.put("/reset", async (req, res) => await reset_password(req, res));
+
+router.put("/update_password",auth,async(req,res)=>await change_password(req,res));
 
 router.get("/", async (req, res) => await get_students(req, res));
 
