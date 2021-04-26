@@ -28,7 +28,7 @@ router.post("/", async (req, res) => await post_student(req, res));
 router.put("/", auth, async (req, res) => await update_student(req, res));
 router.get("/me", auth, async (req, res) => await get_student(req, res));
 
-router.get("/all_data", auth, async (req, res) => await all_data(req, res));
+// router.get("/all_data", auth, async (req, res) => await all_data(req, res));
 
 router.post(
   "/authenticate",

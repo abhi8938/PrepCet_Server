@@ -5,104 +5,62 @@ const Joi=require('joi')
 const mongoose=require('mongoose')
 
 const studentSchema = new mongoose.Schema({
-  first_name: {
+  name: {       //done
     type: String,
     required: true,
     minlength: 2,
     maxlength: 30,
   },
-  last_name: {
+  email: {    //done
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
+    minlength: 5,
+    unique: true,
   },
-  gender: {
-    type: String,
-    required: true,
-    enum: ["MALE", "FEMALE", "OTHERS", "RATHER NOT SAY"],
-  },
-  contact: {
+  contact: {  //done
     type: String,
     unique:true,
     minlength: 10,
     maxlength: 10,
   },
-  user_name: {
+  gender: {     //done
     type: String,
-    unique: true,
     required: true,
-    maxlength: 30,
+    enum: ["MALE", "FEMALE", "OTHERS", "RATHER NOT SAY"],
   },
-  dob: {
+  dob: {      //done
     type: Date,
     required: true,
   },
-  email: {
-    type: String,
-    required: true,
-    minlength: 5,
-    unique: true,
-  },
-  password: {
+  password: {   //done
     type: String,
     required: true,
     minlength: 5,
     maxlength: 1024,
   },
-  device_token: {
+  device_token: {  //done
     type: String,
   },
-  program: {
+  education: {  //done
     // type: String,
-    type: mongoose.Schema.ObjectId,
-    required: true,
-    minlength: 3,
-  },
-  college: {
     type: String,
     required: true,
-    minlength: 3,
+    enum: ['12th pass','1st year','2nd year','3rd year','4th year','pass'],
   },
-  semester: {
-    type: Number,
+  user_name: {    //dome
+    type: String,
+    unique: true,
     required: true,
+    maxlength: 30,
   },
-  university: {
-    // type: String,
-    type: mongoose.Schema.ObjectId,
-    required: true,
-    minlength: 3,
-  },
-  specialization: {
-    type: String,
-  },
-  type: {
-    type: String,
-    enum: ["STU"],
-    default: "STU",
-  },
-  status: {
-    type: String,
-    enum: ["ACTIVE", "INACTIVE"],
-    default: "ACTIVE",
-  },
-  isloggedin: {
-    type: Boolean,
-    default: true,
-  },
-  isAdmin: Boolean,
-  created_at: {
-    type: Date,
-    default: Date.now(),
-  },
-  last_update: {
-    type: Date,
-    default: Date.now(),
+  isloggedin:{
+    type:Boolean,
+    default:true
   },
   keywords: [String],
-
   DUR: [DUR],
+},{
+  timestamps:true
 });
 
 studentSchema.method("generateAuthToken", function () {
@@ -117,20 +75,15 @@ const Student = mongoose.model("Student", studentSchema);
 
 const validate = (student) => {
   const schema = Joi.object({
-    first_name: Joi.string().required(),
-    last_name: Joi.string().required(),
-    gender: Joi.string().valid("MALE", "FEMALE", "OTHERS", "RATHER NOT SAY"),
-    contact: Joi.string(),
-    user_name: Joi.string().required(),
-    dob: Joi.date().required(),
+    name: Joi.string().required(),
     email: Joi.string().min(5).required().email(),
+    contact: Joi.string(),
+    gender: Joi.string().valid("MALE", "FEMALE", "OTHERS", "RATHER NOT SAY"),
+    dob: Joi.date().required(),
     password: Joi.string().min(5).max(1024).required(),
     device_token: Joi.string(),
-    program: Joi.string().required(),
-    college: Joi.string().required(),
-    semester: Joi.number().required(),
-    university: Joi.string().required(),
-    type: Joi.string().valid("STU"),
+    user_name: Joi.string().required(),
+    education: Joi.string().valid('12th pass','1st year','2nd year','3rd year','4th year','pass'),
   });
 
   return schema.validate(student);
@@ -140,9 +93,10 @@ const validateUpdate = (student) => {
   const schema = Joi.object({
     contact: Joi.string(),
     email: Joi.string().min(5).email(),
+    user_name: Joi.string(),
     password: Joi.string().min(5).max(1024),
     device_token: Joi.string(),
-    semester: Joi.number(),
+    education: Joi.string().valid('12th pass','1st year','2nd year','3rd year','4th year','pass'),
   });
 
   return schema.validate(student);
