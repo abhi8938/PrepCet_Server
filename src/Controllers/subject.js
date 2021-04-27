@@ -30,6 +30,9 @@ const get_subject=async(req,res)=>{
 }
 
 const update_subject=async(req,res)=>{
+    const {error}=validateUpdate(req.body)
+    if(error) throw new Error(error.details[0].message)
+
     let subject=await Subject.findById(req.params.id)
     if(!subject) throw new Error("No subject based on this id")
 

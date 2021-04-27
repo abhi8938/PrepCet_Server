@@ -6,6 +6,7 @@ const Payment=require("../Routes/Payments")
 const Students=require("../Routes/Students")
 const Subject=require("../Routes/subject")
 const Subscriptions=require("../Routes/Subscriptions")
+const Post=require("../Routes/posts")
 const asyncMiddleware=require("../Middlewares/async")
 const error=require("../Middlewares/error")
 const winston=require("winston")
@@ -17,6 +18,7 @@ const routes = (app) => {
   app.use("/api/packages", Packages);  //done
   app.use("/api/payment", Payment);
   app.use("/api/subject",Subject);
+  app.use("/api/post",Post)
 
   app.use(error);
 };
