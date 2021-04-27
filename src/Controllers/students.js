@@ -51,11 +51,9 @@ const post_student = async (req, res) => {
   let student = new Student(req.body);
   const salt = await bcrypt.genSalt(13);
   student.password = await bcrypt.hash(student.password, salt);
-  let keywords = generateKeywords(
-    `${req.body.first_name} ${req.body.last_name}`
-  )
+  let keywords = generateKeywords(req.body.email)
     .concat(generateKeywords(req.body.contact))
-    .concat(generateKeywords(req.body.email));
+    .concat(generateKeywords(req.body.user_name));
   student.keywords = keywords;
   student = await student.save();
   const token = student.generateAuthToken();
@@ -69,6 +67,7 @@ const update_student = async (req, res) => {
   const { error } = validateUpdate(req.body);
   if (error) throw new Error(error.details[0].message);
   let student = await Student.findById(req.user._id);
+  let keywords=[]
   if (!student)
     throw new Error("The Student with the given id is not available");
   if(req.body.email){
@@ -76,28 +75,37 @@ const update_student = async (req, res) => {
       email: req.body.email,
     });
     if(email_student) throw new Error("There is aldredy an account on this email ID please use another emailID")
+    keywords=keywords.concat(generateKeywords(req.body.email))
+  }else{
+    keywords=keywords.concat(generateKeywords(student.email))
   }
   if(req.body.contact){
     let contact_student = await Student.findOne({
-      contact: req.body.econtact,
+      contact: req.body.contact,
     });
     if(contact_student) throw new Error("There is aldredy an account on this Contact please use another contact number")
+    keywords=keywords.concat(generateKeywords(req.body.contact))
+  }else{
+    keywords=keywords.concat(generateKeywords(student.contact))
   }
   if(req.body.user_name){
     let userID_Student = await Student.findOne({
       user_name: req.body.user_name,
     });
     if(userID_Student) throw new Error("There is aldredy an account on this ID please use another ID")
+    keywords=keywords.concat(generateKeywords(req.body.user_name))
+  }else{
+    keywords=keywords.concat(generateKeywords(student.user_name))
+  }
+  if(JSON.stringify(keywords)!==JSON.stringify(student.keywords)){
+    req.body.keywords=keywords
   }
   handleUpdate(student, req.body);
   student = await student.save();
-  // if (req.body.semester)
-  //   res.status(201).send(`http://127.0. 0.1:3001/ccavRequestHandler`);
   res.status(200).send(_.omit(student, ["password"]));
 };
 
 const reset_password = async (req, res) => {
-  console.log("req.body", req.body);
   if (!req.body.password) throw new Error("NO Password sent");
   if (!req.body.id) throw new Error("NO Recipent");
   let student;

@@ -36,6 +36,10 @@ const update_subject=async(req,res)=>{
     let subject=await Subject.findById(req.params.id)
     if(!subject) throw new Error("No subject based on this id")
 
+    if(req.body.name){
+        req.body.keywords=generateKeywords(req.body.name)
+    }
+
     handleUpdate(subject,req.body)
     subject=await subject.save()
     res.status(200).send(subject)
