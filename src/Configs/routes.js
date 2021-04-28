@@ -9,6 +9,7 @@ const Subscriptions=require("../Routes/Subscriptions")
 const Post=require("../Routes/posts")
 const Report=require("../Routes/report")
 const question=require("../Routes/question")
+const Doubt=require("../Routes/doubt")
 const asyncMiddleware=require("../Middlewares/async")
 const error=require("../Middlewares/error")
 const winston=require("winston")
@@ -23,6 +24,7 @@ const routes = (app) => {
   app.use("/api/post",Post)
   app.use("/api/report",Report)
   app.use("/api/question",question)
+  app.use("/api/doubt",Doubt)
 
   app.use(error);
 };
