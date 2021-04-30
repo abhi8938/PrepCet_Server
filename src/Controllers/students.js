@@ -3,6 +3,7 @@ const {
   validate,
   validateAuth,
   validateUpdate,
+  validatePassword,
 } =require("../Validators/student");
 const { generateKeywords, handleUpdate } =require ("../Services/algo");
 
@@ -12,7 +13,7 @@ const _ =require ("lodash");
 const bcrypt =require ("bcrypt");
 
 const get_students = async (req, res) => {
-  const students = await Student.find().sort("first_name");
+  const students = await Student.find().sort("name");
   res.status(200).send(students);
 };
 
@@ -50,11 +51,9 @@ const post_student = async (req, res) => {
   let student = new Student(req.body);
   const salt = await bcrypt.genSalt(13);
   student.password = await bcrypt.hash(student.password, salt);
-  let keywords = generateKeywords(
-    `${req.body.first_name} ${req.body.last_name}`
-  )
+  let keywords = generateKeywords(req.body.email)
     .concat(generateKeywords(req.body.contact))
-    .concat(generateKeywords(req.body.email));
+    .concat(generateKeywords(req.body.user_name));
   student.keywords = keywords;
   student = await student.save();
   const token = student.generateAuthToken();
@@ -68,17 +67,45 @@ const update_student = async (req, res) => {
   const { error } = validateUpdate(req.body);
   if (error) throw new Error(error.details[0].message);
   let student = await Student.findById(req.user._id);
+  let keywords=[]
   if (!student)
     throw new Error("The Student with the given id is not available");
+  if(req.body.email){
+    let email_student = await Student.findOne({
+      email: req.body.email,
+    });
+    if(email_student) throw new Error("There is aldredy an account on this email ID please use another emailID")
+    keywords=keywords.concat(generateKeywords(req.body.email))
+  }else{
+    keywords=keywords.concat(generateKeywords(student.email))
+  }
+  if(req.body.contact){
+    let contact_student = await Student.findOne({
+      contact: req.body.contact,
+    });
+    if(contact_student) throw new Error("There is aldredy an account on this Contact please use another contact number")
+    keywords=keywords.concat(generateKeywords(req.body.contact))
+  }else{
+    keywords=keywords.concat(generateKeywords(student.contact))
+  }
+  if(req.body.user_name){
+    let userID_Student = await Student.findOne({
+      user_name: req.body.user_name,
+    });
+    if(userID_Student) throw new Error("There is aldredy an account on this ID please use another ID")
+    keywords=keywords.concat(generateKeywords(req.body.user_name))
+  }else{
+    keywords=keywords.concat(generateKeywords(student.user_name))
+  }
+  if(JSON.stringify(keywords)!==JSON.stringify(student.keywords)){
+    req.body.keywords=keywords
+  }
   handleUpdate(student, req.body);
   student = await student.save();
-  // if (req.body.semester)
-  //   res.status(201).send(`http://127.0. 0.1:3001/ccavRequestHandler`);
   res.status(200).send(_.omit(student, ["password"]));
 };
 
 const reset_password = async (req, res) => {
-  console.log("req.body", req.body);
   if (!req.body.password) throw new Error("NO Password sent");
   if (!req.body.id) throw new Error("NO Recipent");
   let student;
@@ -94,6 +121,24 @@ const reset_password = async (req, res) => {
   student = await student.save();
   res.status(200).send("Password Updated");
 };
+
+const change_password=async(req,res)=>{
+  const { error } = validatePassword(req.body);
+  if (error) throw new Error(error.details[0].message);
+  let student = await Student.findById(req.user._id);
+  if (!student)
+    throw new Error("The Student with the given id is not available");
+
+  const validPassword = await bcrypt.compare(
+    req.body.previous_password,
+    student.password
+  );
+  if (!validPassword) throw new Error("Invalid Password");
+  const salt = await bcrypt.genSalt(13);
+  student.password = await bcrypt.hash(req.body.new_password, salt);
+  student=await student.save();
+  res.status(200).send("Password Updated");
+}
 
 const authenticate = async (req, res) => {
   const { error } = validateAuth(req.body);
@@ -153,5 +198,6 @@ module.exports = {
   update_student,
   get_students,
   get_student,
-  post_student
+  post_student,
+  change_password
 }

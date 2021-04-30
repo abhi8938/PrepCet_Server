@@ -51,8 +51,8 @@ const handleUpdate = (document, body) => {
   return Object.keys(body).map(function (key, index) {
     const DUR = {
       key: key,
-      prev: document[key],
-      current: body[key],
+      prev: String(document[key]),
+      current: String(body[key]),
       created_at: Date.now(),
     };
     document[key] = body[key];
