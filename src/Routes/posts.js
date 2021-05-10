@@ -26,7 +26,6 @@ router.get("/:id",async(req,res)=>await get_post(req,res))
 router.put("/:id",
     upload.fields([{ name: "image", maxCount: 1 }]),
     async(req,res)=>{
-    console.log(req.files)
     if(req.files.length!==undefined){
     if(req.files.length!==0){
         req.body.image=req.files['image'][0].filename

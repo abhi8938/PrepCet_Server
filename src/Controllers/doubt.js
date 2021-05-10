@@ -1,6 +1,7 @@
 const {
     validate,
     validateUpdate,
+    validateComment,
     Doubt
 }=require("../Validators/doubt")
 const { handleUpdate } =require ("../Services/algo");
@@ -11,7 +12,10 @@ const upload_doubt=async(req,res)=>{
     if(error) throw new Error(error.details[0].message)
 
     let student=await Student.findById(req.user._id)
-    if(!student) throw new Error("There is no user based on this ID")
+    if (!student)
+    throw new Error(
+      "The student with givern id in not present OR wrong student doc id"
+    );
 
     req.body.STID=req.user._id
     let doubt=new Doubt(req.body)
@@ -27,10 +31,7 @@ const get_doubt=async(req,res)=>{
 }
 
 const get_doubts=async(req,res)=>{
-    let student=await Student.findById(req.user._id)
-    if(!student) throw new Error("There is no user based on this ID")
-
-    const doubts=await Doubt.find({STID:req.user._id})
+    const doubts=await Doubt.find()
     res.status(200).send(doubts)
 }
 
@@ -50,9 +51,55 @@ const update_doubt=async(req,res)=>{
     res.status(200).send(doubt)
 }
 
+const add_comment=async(req,res)=>{
+    const {error}=validateComment(req.body)
+    if(error) throw new Error(error.details[0].message)
+
+    let student=await Student.findById(req.user._id)
+    if(!student) throw new Error("There is no user based on this ID")
+
+    let doubt=await Doubt.findById(req.params.id)
+    if(!doubt) throw new Error("There is no doubts based on this ID or you are not allowed to update this")
+
+    doubts=doubt.comments
+    doubts.push({
+        STID:req.user._id,
+        attachments:req.body.attachments,
+        comment:req.body.comment
+    })
+    body={
+        comments:doubts
+    }
+
+    handleUpdate(doubt,body)
+    await doubt.save()
+    res.status(200).send(doubt)
+}
+
+const delete_comment=async(req,res)=>{
+    let student=await Student.findById(req.user._id)
+    if(!student) throw new Error("There is no user based on this ID")
+
+    let doubt=await Doubt.findById(req.params.id)
+    if(!doubt) throw new Error("There is no doubts based on this ID or you are not allowed to update this")
+
+    let comments=doubt.comments
+    comments = comments.filter(item => String(item._id) !== req.params.ide)
+
+    body={
+        comments:comments
+    }
+
+    handleUpdate(doubt,body)
+    await doubt.save()
+    res.status(200).send(doubt)
+}
+
 module.exports={
     upload_doubt,
     update_doubt,
     get_doubts,
-    get_doubt
+    get_doubt,
+    add_comment,
+    delete_comment
 }

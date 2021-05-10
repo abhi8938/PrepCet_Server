@@ -162,6 +162,7 @@ const authenticate = async (req, res) => {
   // console.log(validPassword)
   if (!validPassword) throw new Error("Invalid Password");
   const token = student.generateAuthToken();
+  await Student.findByIdAndUpdate(student._id, { isloggedin: true });
   res.status(200).send(token);
 };
 

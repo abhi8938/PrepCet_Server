@@ -1,7 +1,21 @@
 const Joi=require("joi")
 const mongoose=require("mongoose")
 const DUR=require("./common")
-
+const commentSchema = new mongoose.Schema({
+    STID:{
+        type:mongoose.Schema.ObjectId,
+    },
+    comment:{
+        type:String,
+        default:""
+    },
+    attachments:{
+        type:[String],
+        default:[]
+    }
+},{
+    timestamps:true
+})
 const doubtSchema=new mongoose.Schema({
     STID:{
         type:mongoose.Schema.ObjectId,
@@ -23,12 +37,25 @@ const doubtSchema=new mongoose.Schema({
     },
     solution:{
         type:String
+    },
+    comments:{
+        type:[commentSchema],
+        default:[]
     }
 },{
     timestamps:true
 })
 
 const Doubt=mongoose.model("Doubt",doubtSchema)
+
+const validateComment=(comment)=>{
+    const schema=Joi.object({
+        comment:Joi.string(),
+        attachments:Joi.array(),
+    })
+
+    return schema.validate(comment)
+}
 
 const validate=(doubt)=>{
     const schema=Joi.object({
@@ -37,7 +64,7 @@ const validate=(doubt)=>{
         subject_id:Joi.string().required(),
         chapter_name:Joi.string().required(),
         resolved:Joi.boolean().required(),
-        solution:Joi.string()
+        solution:Joi.string(),
     })
 
     return schema.validate(doubt)
@@ -50,7 +77,7 @@ const validateUpdate=(doubt)=>{
         subject_id:Joi.string(),
         chapter_name:Joi.string(),
         resolved:Joi.boolean(),
-        solution:Joi.string()
+        solution:Joi.string(),
     })
 
     return schema.validate(doubt)
@@ -59,5 +86,6 @@ const validateUpdate=(doubt)=>{
 module.exports={
     validate,
     validateUpdate,
+    validateComment,
     Doubt
 }
