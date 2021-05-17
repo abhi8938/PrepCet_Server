@@ -1,6 +1,6 @@
-const DUR =require("../Validators/common")
-const Joi=require('joi')
-const mongoose=require('mongoose')
+const DUR = require("../Validators/common");
+const Joi = require("joi");
+const mongoose = require("mongoose");
 
 const Pack = mongoose.model(
   "packs",
@@ -32,7 +32,7 @@ const Pack = mongoose.model(
       type: {
         type: String,
         required: true,
-        enum: ["TRIAL", "PAID"],
+        enum: ["PAID"],
       },
       keywords: [String],
       DUR: [DUR],
@@ -84,5 +84,5 @@ const validateUpdate = (_package) => {
 module.exports = {
   validateUpdate,
   validate,
-  Pack
-}
+  Pack,
+};
