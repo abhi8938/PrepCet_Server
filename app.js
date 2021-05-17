@@ -11,6 +11,7 @@ const {fileURLToPath}=require("url")
 const redirect =require('express-redirect')
 const routes=require('./src/Configs/routes')
 const winston=require('winston')
+var passport = require('passport');
 
 error_supporter();
 config_support();
@@ -21,11 +22,12 @@ redirect(app);
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
-    extended: true,
+    extended: false,
   })
 );
 app.use(express.static("public"));
 app.engine("html", ejs.renderFile);
+
 
 app.use(cors());
 app.use(express.json());
