@@ -7,14 +7,10 @@ const subjectSchema=new mongoose.Schema({
         type:String,
         required:true
     },
-    chapters:[{
-        name:{
-            type:String
-        },
-        content:{
-            type:String
-        }
-    }],
+    chapters:{
+        type:[String],
+        default:[]
+    },
     DUR:[DUR],
     keywords:[String]
 },{
