@@ -31,6 +31,9 @@ const doubtSchema=new mongoose.Schema({
     chapter_name:{
         type:String
     },
+    chapter_id:{
+        type:mongoose.Schema.ObjectId
+    },
     DUR:[DUR],
     resolved:{
         type:Boolean

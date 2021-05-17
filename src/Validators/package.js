@@ -29,11 +29,6 @@ const Pack = mongoose.model(
         type: Number,
         min: 0,
       },
-      type: {
-        type: String,
-        required: true,
-        enum: ["TRIAL", "PAID"],
-      },
       keywords: [String],
       DUR: [DUR],
     },

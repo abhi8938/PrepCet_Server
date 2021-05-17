@@ -59,6 +59,11 @@ const studentSchema = new mongoose.Schema({
   },
   keywords: [String],
   DUR: [DUR],
+  wallet:{
+    type:Number,
+    default:0
+  },
+  transactions:[String]
 },{
   timestamps:true
 });
