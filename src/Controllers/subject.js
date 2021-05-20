@@ -21,7 +21,7 @@ const post_subject=async (req, res)=>{
 }
 
 const get_subjects=async(req,res)=>{
-    const subjects=await Subject.find(req.headers).sort('name')
+    const subjects=await Subject.find(req.query).sort('name')
     res.status(200).send(subjects)
 }
 
