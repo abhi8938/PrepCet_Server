@@ -18,7 +18,7 @@ const post_chapter=async (req, res)=>{
 }
 
 const get_chapters=async (req, res)=>{
-    let chapters=await Chapter.find(req.body).sort("chapter_no")
+    let chapters=await Chapter.find(req.headers).sort("chapter_no")
     res.status(200).send(chapters)
 }
 

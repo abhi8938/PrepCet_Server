@@ -22,7 +22,7 @@ const post_question=async(req,res)=>{
 }
 
 const get_questions=async(req,res)=>{
-    const question=await Question.find().sort('subject_name')
+    const question=await Question.find(req.headers).sort('subject_name')
     res.status(200).send(question)
 }
 
