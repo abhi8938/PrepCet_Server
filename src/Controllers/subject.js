@@ -6,6 +6,8 @@ const {
 const {generateKeywords,handleUpdate}=require("../Services/algo")
 
 const post_subject=async (req, res)=>{
+    if(req.user.isAdmin==false) throw new Error("You are not allowed to upload the data")
+
     const {error}=validate(req.body)
     if(error) throw new Error(error.details[0].message)
 
@@ -30,6 +32,8 @@ const get_subject=async(req,res)=>{
 }
 
 const update_subject=async(req,res)=>{
+    if(req.user.isAdmin==false) throw new Error("You are not allowed to update the data")
+
     const {error}=validateUpdate(req.body)
     if(error) throw new Error(error.details[0].message)
 

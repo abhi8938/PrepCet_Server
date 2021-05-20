@@ -1,19 +1,15 @@
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const {Student}=require("../Validators/student")
+const bcrypt =require ("bcrypt");
+const { generateKeywords }=require("./algo")
 
-// Use the GoogleStrategy within Passport.
-//   Strategies in Passport require a `verify` function, which accept
-//   credentials (in this case, an accessToken, refreshToken, and Google
-//   profile), and invoke a callback with a user object.
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
 
 passport.deserializeUser(function(user, done) {
-  // User.findById(id, function(err, user) {
     done(null, user);
-  // });
 });
 
 passport.use(new GoogleStrategy({
@@ -26,6 +22,19 @@ passport.use(new GoogleStrategy({
     let student=await Student.findOne({"email":profile._json.email})
     // console.log(student)
     if(student) profile._json.authtoken=student.generateAuthToken()
+    else{
+      if(profile._json.email_verified==false) return done(null,profile)
+      let student=new Student({
+        name:profile._json.name,
+        email:profile._json.email,
+      })
+      const salt = await bcrypt.genSalt(13);
+      student.password = await bcrypt.hash(profile._json.name+profile._json.email, salt);
+      let keywords = generateKeywords(profile._json.email)
+      student.keywords = keywords;
+      student = await student.save();
+      profile._json.authtoken = student.generateAuthToken();
+    }
     
     return done(null,profile)
   }

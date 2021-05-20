@@ -6,7 +6,7 @@ const {
 const {generateKeywords,handleUpdate}=require("../Services/algo")
 
 const post_category=async(req,res)=>{
-    console.log("Working yes")
+    if(req.user.isAdmin==false) throw new Error("You are not allowed to upload the data")
     const {error}=validate(req.body)
     if(error) throw new Error(error.details[0].message)
     console.log("Working")
@@ -22,6 +22,7 @@ const get_category=async(req,res)=>{
 }
 
 const update_category=async(req,res)=>{
+    if(req.user.isAdmin==false) throw new Error("You are not allowed to update the data")
     const category=await Category.findById(req.params.id)
     if(!category) throw new Error("No categoryes based on this Id")
     handleUpdate(category,req.body)

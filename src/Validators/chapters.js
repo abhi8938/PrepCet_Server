@@ -10,20 +10,26 @@ const chapterSchema=new mongoose.Schema({
     description:{
         type:String
     },
+    category_id:{
+        type:mongoose.Schema.ObjectId,
+    },
     subject_id:{
         type:mongoose.Schema.ObjectId,
         required:true
     },
-    chapter_no:{
+    num:{
         type:Number
     },
     ebook:{
-        type:String
+        type:[String]
     },
-    video:{
-        type:String
+    lecture:{
+        type:[String]
     },
-    DUR:[DUR]
+    DUR:[DUR],
+    keywords:[String]
+},{
+    timestamps:true
 })
 
 const Chapter=mongoose.model("Chapter",chapterSchema)
@@ -34,8 +40,8 @@ const validate=(chapter)=>{
         description:Joi.string(),
         subject_id:Joi.string().required(),
         chapter_no:Joi.number(),
-        ebook:Joi.string().required(),
-        video:Joi.string().required(),
+        ebook:Joi.array().required(),
+        lecture:Joi.array().required(),
     })
 
     return schema.validate(chapter)
@@ -47,8 +53,8 @@ const validateUpdate=(chapter)=>{
         description:Joi.string(),
         subject_id:Joi.string(),
         chapter_no:Joi.number(),
-        ebook:Joi.string(),
-        video:Joi.string()
+        ebook:Joi.array(),
+        lecture:Joi.array()
     })
 
     return schema.validate(chapter)

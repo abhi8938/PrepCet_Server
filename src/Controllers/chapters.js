@@ -8,7 +8,7 @@ const {generateKeywords,handleUpdate}=require("../Services/algo")
 const fs=require("fs")
 
 const post_chapter=async (req, res)=>{
-    if(req.user.isAdmin==true) throw new Error("You are not allowed to upload the data")
+    if(req.user.isAdmin==false) throw new Error("You are not allowed to upload the data")
     const {error}=validate(req.body)
     if(error) throw new Error(error.details[0].message)
 
@@ -28,7 +28,7 @@ const get_chapter=async (req, res)=>{
 }
 
 const update_chapter=async (req, res)=>{
-    if(req.user.isAdmin==true) throw new Error("You are not allowed to edit the data")
+    if(req.user.isAdmin==false) throw new Error("You are not allowed to edit the data")
 
     const {error}=validateUpdate(req.body)
     if(error) throw new Error(error.details[0].message)

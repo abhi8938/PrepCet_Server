@@ -5,7 +5,6 @@ const mongoose=require('mongoose')
 const questionSchema=new mongoose.Schema({
     subject_name:{
         type:String,
-        required:true,
     },
     chapter_id:{
         type:mongoose.Schema.ObjectId
@@ -16,18 +15,24 @@ const questionSchema=new mongoose.Schema({
     question:{
         type:String
     },
+    attachments:[String],
     options:[{
         option:{
             type:String
         },
         correct:{
             type:Boolean,
+        },
+        type:{
+            type:String,
+            enum:['file','text']
         }
     }],
     solution:{
         type:String
     },
-    DUR:[DUR]
+    DUR:[DUR],
+    keywords: [String],
 },{
     timestamps:true
 })

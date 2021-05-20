@@ -9,18 +9,28 @@ const auth=require("../Middlewares/auth")
 
 const express=require("express")
 const multer=require("multer")
+const admin=require("../Middlewares/admin")
 
 const router=express.Router()
 let upload = multer({ dest: "uploads/"});
 
+function findnames(list){
+    newList=[]
+    list.forEach(val=>{
+        newList.push(val.filename)
+    })
+    return newList
+}
+
 router.post(
     "/",
-    auth,
-    upload.fields([{ name: "ebook", maxCount: 1 },{ name: "video", maxCount: 1 }]),
+    [auth,admin],
+    upload.fields([{ name: "ebook" },{ name: "lecture" }]),
     async (req,res)=>{
 
-        req.body.ebook=req.files["ebook"][0].filename
-        req.body.video=req.files["video"][0].filename
+        req.body.ebook=findnames(req.files.ebook) 
+        req.body.lecture=findnames(req.files.lecture)
+        
 
         await post_chapter(req,res)
     } 
@@ -32,13 +42,13 @@ router.get("/:id",async(req,res)=>await get_chapter(req,res))
 
 router.put(
     "/:id",
-    auth,
-    upload.fields([{ name: "ebook", maxCount: 1 },{ name: "video", maxCount: 1 }]),
+    [auth,admin],
+    upload.fields([{ name: "ebook" },{ name: "video"}]),
     async(req,res)=>{
         if(Object.keys(req.files).length!==undefined){
             if(Object.keys(req.files).length!==0){
-                if("ebook" in req.files) req.body.ebook=req.files["ebook"][0].filename
-                if("video" in req.files) req.body.video=req.files["video"][0].filename
+                if("ebook" in req.files) req.body.ebook=findnames(req.files.ebook) 
+                if("video" in req.files) req.body.lecture=findnames(req.files.lecture)
             }
         }
         // console.log(req.files)
