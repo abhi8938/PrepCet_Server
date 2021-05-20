@@ -42,6 +42,7 @@ const validate=(chapter)=>{
         chapter_no:Joi.number(),
         ebook:Joi.array().required(),
         lecture:Joi.array().required(),
+        category_id:joi.string().required(),
     })
 
     return schema.validate(chapter)
@@ -54,7 +55,8 @@ const validateUpdate=(chapter)=>{
         subject_id:Joi.string(),
         chapter_no:Joi.number(),
         ebook:Joi.array(),
-        lecture:Joi.array()
+        lecture:Joi.array(),
+        category_id:joi.string(),
     })
 
     return schema.validate(chapter)
