@@ -46,6 +46,7 @@ const validate=(question)=>{
         question:Joi.string().required(),
         options:Joi.array().required(),
         solution:Joi.string().required(),
+        attachments:Joi.array().required()
     })
 
     return schema.validate(question)
@@ -58,6 +59,7 @@ const validateUpdate=(question)=>{
         question:Joi.string(),
         options:Joi.array(),
         solution:Joi.string(),
+        attachments:Joi.array()
     })
 
     return schema.validate(question)
