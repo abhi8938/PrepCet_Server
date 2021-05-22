@@ -22,7 +22,7 @@ const Category=mongoose.model("Category",categorySchema)
 const validate=(category)=>{
     const schema=Joi.object({
         name:Joi.string().required(),
-        cover:Joi.string().required(),
+        cover:Joi.string(),
         active:Joi.boolean(),
     })
     return schema.validate(category)

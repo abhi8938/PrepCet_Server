@@ -27,7 +27,7 @@ const Subject=mongoose.model("Subject",subjectSchema)
 const validate=(subject)=>{
     const schema=Joi.object({
         name:Joi.string().required(),
-        cover:Joi.string().required(),
+        cover:Joi.string(),
         description:Joi.string(),
         category_id:Joi.string().required(),
     })

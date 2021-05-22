@@ -3,15 +3,6 @@ const Joi=require('joi')
 const mongoose=require('mongoose')
 
 const questionSchema=new mongoose.Schema({
-    subject_name:{
-        type:String,
-    },
-    chapter_id:{
-        type:mongoose.Schema.ObjectId
-    },
-    subject_id:{
-        type:mongoose.Schema.ObjectId
-    },
     question:{
         type:String
     },

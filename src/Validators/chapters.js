@@ -20,12 +20,6 @@ const chapterSchema=new mongoose.Schema({
     num:{
         type:Number
     },
-    ebook:{
-        type:[String]
-    },
-    lecture:{
-        type:[String]
-    },
     DUR:[DUR],
     keywords:[String]
 },{
@@ -40,8 +34,6 @@ const validate=(chapter)=>{
         description:Joi.string(),
         subject_id:Joi.string().required(),
         num:Joi.number(),
-        ebook:Joi.array().required(),
-        lecture:Joi.array().required(),
         category_id:Joi.string().required(),
     })
 
@@ -54,8 +46,6 @@ const validateUpdate=(chapter)=>{
         description:Joi.string(),
         subject_id:Joi.string(),
         num:Joi.number(),
-        ebook:Joi.array(),
-        lecture:Joi.array(),
         category_id:Joi.string(),
     })
 
