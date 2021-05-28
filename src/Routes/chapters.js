@@ -25,11 +25,11 @@ function findnames(list){
 router.post(
     "/",
     [auth,admin],
-    upload.fields([{ name: "ebook" },{ name: "lecture" }]),
+    // upload.fields([{ name: "ebook" },{ name: "lecture" }]),
     async (req,res)=>{
 
-        req.body.ebook=findnames(req.files.ebook) 
-        req.body.lecture=findnames(req.files.lecture)
+        // req.body.ebook=findnames(req.files.ebook) 
+        // req.body.lecture=findnames(req.files.lecture)
         
 
         await post_chapter(req,res)
@@ -43,14 +43,14 @@ router.get("/:id",async(req,res)=>await get_chapter(req,res))
 router.put(
     "/:id",
     [auth,admin],
-    upload.fields([{ name: "ebook" },{ name: "video"}]),
+    // upload.fields([{ name: "ebook" },{ name: "video"}]),
     async(req,res)=>{
-        if(Object.keys(req.files).length!==undefined){
-            if(Object.keys(req.files).length!==0){
-                if("ebook" in req.files) req.body.ebook=findnames(req.files.ebook) 
-                if("video" in req.files) req.body.lecture=findnames(req.files.lecture)
-            }
-        }
+        // if(Object.keys(req.files).length!==undefined){
+        //     if(Object.keys(req.files).length!==0){
+        //         if("ebook" in req.files) req.body.ebook=findnames(req.files.ebook) 
+        //         if("video" in req.files) req.body.lecture=findnames(req.files.lecture)
+        //     }
+        // }
         // console.log(req.files)
         // console.log(req.body)
         await update_chapter(req,res)
