@@ -4,6 +4,36 @@ const jwt=require("jsonwebtoken")
 const Joi=require('joi')
 const mongoose=require('mongoose')
 
+const bookMarkSchema=new mongoose.Schema({
+  type:{
+    type:String,
+    enum:['SUBJECT','QUESTION']
+  },
+  ide:{
+    type:mongoose.Schema.ObjectId
+  },
+  notes:{
+    type:String
+  }
+},{
+  timestamps:true
+})
+
+const transactionSchena=new mongoose.Schema({
+  method:{
+    type:String,
+    enum:['CREDIT','DEBIT'],
+    required:true
+  },
+  amount:{
+    type:Number,
+    required:true
+  },
+  name:{
+    type:String
+  }
+})
+
 const studentSchema = new mongoose.Schema({
   name: {       //done
     type: String,
@@ -67,7 +97,12 @@ const studentSchema = new mongoose.Schema({
     type:Number,
     default:0
   },
-  transactions:[String]
+  credits:{
+    type:Number,
+    default:0
+  },
+  bookmarks:[bookMarkSchema],
+  transactions:[transactionSchena]
 },{
   timestamps:true
 });

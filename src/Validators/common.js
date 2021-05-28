@@ -12,7 +12,7 @@ const DUR = {
   },
   current: {
     type: String,
-    required: true,
+    // required: true,
   },
   created_At: {
     type: Date,

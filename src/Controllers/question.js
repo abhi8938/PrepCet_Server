@@ -50,9 +50,17 @@ const update_question=async(req,res)=>{
     res.status(200).send(question)
 }
 
+const delete_question=async(req,res)=>{
+    const question=await Question.findById(req.params.id)
+    if(!question) throw new Error("No question on this id please try to upload the question")
+    await Question.findByIdAndDelete(req.params.id)
+    res.status(200).send(question)
+}
+
 module.exports = {
     post_question,
     get_questions,
     get_question,
-    update_question
+    update_question,
+    delete_question
 }

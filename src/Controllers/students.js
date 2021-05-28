@@ -190,6 +190,43 @@ const logoutfromdevice = async (req, res) => {
   res.status(200).send({ message: "You are looged out succefully" });
 };
 
+const creditUpdate=async(id,amount,method)=>{
+  let student=await Student.findById(id)
+  if(!student) throw new Error("This is an ivalid token no user in this email id")
+
+  if(method=='credit'){
+    let student=await Student.findByIdAndUpdate(id,{$inc:{credits:amount}},{new:true})
+    return student
+  }else if(method=='debit'){
+    let decrease=-1*amount
+    let student=await Student.findByIdAndUpdate(id,{$inc:{wallet:amount/4,credits:decrease}},{new:true})
+    return student
+  }
+}
+
+const apicredits=async(req,res)=>{
+  let student=await creditUpdate(req.user._id,req.body.amount,req.body.method)
+  res.status(200).send(student)
+}
+
+const walletUpdate=async(id,amount,method)=>{
+  let student=await Student.findById(id)
+  if(!student) throw new Error("This is an ivalid token no user in this email id")
+
+  if(method=='credit'){
+    let student=await Student.findByIdAndUpdate(id,{$inc:{wallet:amount}},{new:true})
+    return student
+  }else if(method=='debit'){
+    let decrease=-1*amount
+    let student=await Student.findByIdAndUpdate(id,{$inc:{wallet:decrease}},{new:true})
+    return student
+  }
+}
+
+const apiwallet=async(req,res)=>{
+  let student=await walletUpdate(req.user._id,req.body.amount,req.body.method)
+  res.status(200).send(student)
+}
 
 module.exports = {
   logoutfromdevice,
@@ -200,5 +237,9 @@ module.exports = {
   get_students,
   get_student,
   post_student,
-  change_password
+  change_password,
+  apicredits,
+  creditUpdate,
+  apiwallet,
+  walletUpdate
 }

@@ -5,7 +5,7 @@ const vocabSchema=new mongoose.Schema({
     title:{
         type:String
     },
-    body:[{
+    body:{
         word:{
             type:String
         },
@@ -16,7 +16,7 @@ const vocabSchema=new mongoose.Schema({
         pronunciation:{
             type:String
         }
-    }]
+    }
 },{
     timestamps:true
 })
@@ -33,7 +33,7 @@ const bodySchema={
 const validate=(vocab)=>{
     const schema=Joi.object({
         title:Joi.string().required(),
-        body:Joi.array().items(bodySchema),
+        body:Joi.object(bodySchema),
     })
 
     return schema.validate(vocab)

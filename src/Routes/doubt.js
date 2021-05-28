@@ -4,7 +4,9 @@ const {
     get_doubts,
     get_doubt,
     add_comment,
-    delete_comment
+    delete_comment,
+    handleVotes,
+    deleteVotes
 }=require("../Controllers/doubt")
 
 const auth=require("../Middlewares/auth")
@@ -64,6 +66,20 @@ router.delete(
     "/:id&:ide",auth,
     async(req,res)=>{
         await delete_comment(req,res)
+    }
+)
+
+router.post(
+    "/vote/:id&:ide",auth,
+    async(req,res)=>{
+        await handleVotes(req,res)
+    }
+)
+
+router.delete(
+    "/vote/:id&:ide",auth,
+    async(req,res)=>{
+        await deleteVotes(req,res)
     }
 )
 
