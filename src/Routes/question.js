@@ -28,15 +28,15 @@ router.post("/",
     upload.fields([{name:'attachments'},{name:'answers'}]),
     // upload.array('answers'),
     async(req,res)=>{
-        console.log(req.body)
-        res.send({"Body":req.body,"Files":req.files})
+        // console.log(req.body)
+        // res.send({"Body":req.body,"Files":req.files})
 
-        // if(Object.keys(req.files).length!==undefined){
-        //     if(Object.keys(req.files).length!==0){
-        //         if("attachments" in req.files) req.body.attachments=findnames(req.files.attachments) 
-        //     }
-        // }
-        // await post_question(req,res)
+        if(Object.keys(req.files).length!==undefined){
+            if(Object.keys(req.files).length!==0){
+                if("attachments" in req.files) req.body.attachments=findnames(req.files.attachments) 
+            }
+        }
+        await post_question(req,res)
     }
 )
 
