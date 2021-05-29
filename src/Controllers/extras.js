@@ -4,15 +4,15 @@ const {
   ValidateBMessage,
   ValidateLegal,
   validateLegalUpdate,
-} =require("../Validators/extra");
+} = require("../Validators/extra");
 const {
   generateKeywords,
   handleUpdate,
   sendMail,
   sendSMS,
-} =require("../Services/algo");
+} = require("../Services/algo");
 
-const { Student } =require("../Validators/student");
+const { Student } = require("../Validators/student");
 
 /*
  * *
@@ -106,7 +106,7 @@ const post_code = async (req, res) => {
     let student;
     if (/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(req.body.recipent)) {
       student = await Student.findOne({ email: req.body.recipent });
-      if (student) throw new Error("Email aldredy exists");
+      if (student) throw new Error("Email already exists");
     } else if (/^\d{10}$/.test(req.body.recipent)) {
       student = await Student.findOne({ contact: req.body.recipent });
       if (student) throw new Error("Phone number exists");
@@ -118,15 +118,15 @@ const post_code = async (req, res) => {
 
   const subject =
     req.body.type && req.body.type === "RESET"
-      ? "PrepUni password reset code"
-      : "PrepUni verification code";
+      ? "PrepCET password reset code"
+      : "PrepCET verification code";
   const body =
     req.body.type && req.body.type === "RESET"
       ? `<b>Hello User,<br><br> </b>
-               <b>Password reset code for PrepUni app is <h1>${req.body.code}</h1></b>
+               <b>Password reset code for PrepCET app is <h1>${req.body.code}</h1></b>
         `
       : `<b>Hello User,<br><br> </b>
-               <b>Verification code for PrepUni app is <h1>${req.body.code}</h1></b>
+               <b>Verification code for PrepCET app is <h1>${req.body.code}</h1></b>
         `;
   let id = "";
   console.log("request", req.body);
@@ -145,8 +145,8 @@ const post_code = async (req, res) => {
     try {
       const message =
         req.body.type && req.body.type === "RESET"
-          ? `Password reset code for PrepUni app is - ${req.body.code}`
-          : `Verification code for PrepUni app is - ${req.body.code}`;
+          ? `Password reset code for PrepCET app is - ${req.body.code}`
+          : `Verification code for PrepCET app is - ${req.body.code}`;
 
       const sms_response = await sendSMS(req.body.recipent, message);
 
@@ -228,3 +228,4 @@ module.exports = {
   update_bmessage,
   download_file
 }
+
