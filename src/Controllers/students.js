@@ -4,13 +4,13 @@ const {
   validateAuth,
   validateUpdate,
   validatePassword,
-} =require("../Validators/student");
-const { generateKeywords, handleUpdate } =require ("../Services/algo");
+} = require("../Validators/student");
+const { generateKeywords, handleUpdate } = require("../Services/algo");
 
-const { BMessage } =require ("../Validators/extra");
-const { Subscript } =require("../Validators/subscription");
-const _ =require ("lodash");
-const bcrypt =require ("bcrypt");
+const { BMessage } = require("../Validators/extra");
+const { Subscript } = require("../Validators/subscription");
+const _ = require("lodash");
+const bcrypt = require("bcrypt");
 
 const get_students = async (req, res) => {
   const students = await Student.find().sort("name");
@@ -39,14 +39,16 @@ const post_student = async (req, res) => {
       contact: req.body.contact,
     });
   }
-  let userID_student = await Student.findOne({
-    user_name: req.body.user_name,
-  });
-  console.log("student", email_student, contact_student, userID_student);
-  if (email_student || contact_student || userID_student)
-    throw new Error(
-      "User with same email or contact or userID already exists, try logging in."
-    );
+  if (email_student && req.body.signin_method === "EMAIL") {
+    throw new Error("User with same email already exists, try logging in.");
+  }
+
+  if (email_student && req.body.signin_method !== "EMAIL") {
+    return authenticate(req, res);
+  }
+
+  if (contact_student)
+    throw new Error("User with same contact already exists, try logging in.");
 
   let student = new Student(req.body);
   const salt = await bcrypt.genSalt(13);
@@ -67,38 +69,47 @@ const update_student = async (req, res) => {
   const { error } = validateUpdate(req.body);
   if (error) throw new Error(error.details[0].message);
   let student = await Student.findById(req.user._id);
-  let keywords=[]
+  let keywords = [];
   if (!student)
     throw new Error("The Student with the given id is not available");
-  if(req.body.email){
+  if (req.body.email) {
     let email_student = await Student.findOne({
       email: req.body.email,
     });
-    if(email_student) throw new Error("There is aldredy an account on this email ID please use another emailID")
-    keywords=keywords.concat(generateKeywords(req.body.email))
-  }else{
-    keywords=keywords.concat(generateKeywords(student.email))
+    if (email_student)
+      throw new Error(
+        "There is aldredy an account on this email ID please use another emailID"
+      );
+    keywords = keywords.concat(generateKeywords(req.body.email));
+  } else {
+    keywords = keywords.concat(generateKeywords(student.email));
   }
-  if(req.body.contact){
+  if (req.body.contact) {
     let contact_student = await Student.findOne({
       contact: req.body.contact,
     });
-    if(contact_student) throw new Error("There is aldredy an account on this Contact please use another contact number")
-    keywords=keywords.concat(generateKeywords(req.body.contact))
-  }else{
-    keywords=keywords.concat(generateKeywords(student.contact))
+    if (contact_student)
+      throw new Error(
+        "There is aldredy an account on this Contact please use another contact number"
+      );
+    keywords = keywords.concat(generateKeywords(req.body.contact));
+  } else {
+    keywords = keywords.concat(generateKeywords(student.contact));
   }
-  if(req.body.user_name){
+  if (req.body.user_name) {
     let userID_Student = await Student.findOne({
       user_name: req.body.user_name,
     });
-    if(userID_Student) throw new Error("There is aldredy an account on this ID please use another ID")
-    keywords=keywords.concat(generateKeywords(req.body.user_name))
-  }else{
-    keywords=keywords.concat(generateKeywords(student.user_name))
+    if (userID_Student)
+      throw new Error(
+        "There is aldredy an account on this ID please use another ID"
+      );
+    keywords = keywords.concat(generateKeywords(req.body.user_name));
+  } else {
+    keywords = keywords.concat(generateKeywords(student.user_name));
   }
-  if(JSON.stringify(keywords)!==JSON.stringify(student.keywords)){
-    req.body.keywords=keywords
+  if (JSON.stringify(keywords) !== JSON.stringify(student.keywords)) {
+    req.body.keywords = keywords;
   }
   handleUpdate(student, req.body);
   student = await student.save();
@@ -122,7 +133,7 @@ const reset_password = async (req, res) => {
   res.status(200).send("Password Updated");
 };
 
-const change_password=async(req,res)=>{
+const change_password = async (req, res) => {
   const { error } = validatePassword(req.body);
   if (error) throw new Error(error.details[0].message);
   let student = await Student.findById(req.user._id);
@@ -136,34 +147,43 @@ const change_password=async(req,res)=>{
   if (!validPassword) throw new Error("Invalid Password");
   const salt = await bcrypt.genSalt(13);
   student.password = await bcrypt.hash(req.body.new_password, salt);
-  student=await student.save();
+  student = await student.save();
   res.status(200).send("Password Updated");
-}
+};
 
 const authenticate = async (req, res) => {
-  const { error } = validateAuth(req.body);
-  if (error) throw new Error(error.details[0].message);
+  console.log("reached here", req.body.email);
+  if (req.body.signin_method === undefined) {
+    const { error } = validateAuth(req.body);
+    if (error) throw new Error(error.details[0].message);
+  }
   let student;
-  if (/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(req.body.id)) {
-    student = await Student.findOne({ email: req.body.id });
+  if (
+    /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(
+      req.body.signin_method ? req.body.email : req.body.id
+    )
+  ) {
+    student = await Student.findOne({
+      email: req.body.signin_method ? req.body.email : req.body.id,
+    });
     if (!student) throw new Error("Invalid Email");
   } else if (/^\d{10}$/.test(req.body.id)) {
     student = await Student.findOne({ contact: req.body.id });
     if (!student) throw new Error("Invalid Phone number");
-  } else {
-    student = await Student.findOne({ user_name: req.body.id });
-    if (!student) throw new Error("Invalid User name");
   }
-  // console.log((req.body.password))
-  const validPassword = await bcrypt.compare(
-    req.body.password,
-    student.password
-  );
-  // console.log(validPassword)
-  if (!validPassword) throw new Error("Invalid Password");
+  if (req.body.signin_method === undefined) {
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      student.password
+    );
+    if (!validPassword) throw new Error("Invalid Password");
+  }
   const token = student.generateAuthToken();
   await Student.findByIdAndUpdate(student._id, { isloggedin: true });
-  res.status(200).send(token);
+  return res
+    .status(200)
+    .header("x-auth-token", token)
+    .send(_.omit(student, ["password"]));
 };
 
 const get_all = async (req, res) => {
@@ -190,7 +210,6 @@ const logoutfromdevice = async (req, res) => {
   res.status(200).send({ message: "You are looged out succefully" });
 };
 
-
 module.exports = {
   logoutfromdevice,
   get_all,
@@ -200,5 +219,5 @@ module.exports = {
   get_students,
   get_student,
   post_student,
-  change_password
-}
+  change_password,
+};
