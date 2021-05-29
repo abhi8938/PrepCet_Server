@@ -9,6 +9,9 @@ const lectureSchema=new mongoose.Schema({
     subject_id:{
         type:mongoose.Schema.ObjectId
     },
+    category_id:{
+        type:mongoose.Schema.ObjectId
+    },
     link:{
         type:String
     },
@@ -35,7 +38,9 @@ const validate=(lecture)=>{
         subject_id:Joi.string(),
         link:Joi.string(),
         daily:Joi.boolean(),
-        prince:Joi.number()
+        prince:Joi.number(),
+        category_id:Joi.string(),
+        cover:Joi.string()
     })
 
     return schema.validate(lecture)
@@ -45,9 +50,11 @@ const validateUpdate=(lecture)=>{
     const schema=Joi.object({
         chapter_id:Joi.string(),
         subject_id:Joi.string(),
+        category_id:Joi.string(),
         link:Joi.string(),
         daily:Joi.boolean(),
-        prince:Joi.number()
+        prince:Joi.number(),
+        cover:Joi.string()
     })
 
     return schema.validate(lecture)
