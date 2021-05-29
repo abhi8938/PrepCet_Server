@@ -20,6 +20,7 @@ const combo=require("../Routes/combos")
 const current=require("../Routes/current")
 const vocab=require("../Routes/vocab")
 const order=require("../Routes/orders")
+const offer=require("../Routes/offer")
 const asyncMiddleware=require("../Middlewares/async")
 const error=require("../Middlewares/error")
 const winston=require("winston")
@@ -45,6 +46,7 @@ const routes = (app) => {
   app.use("/api/current",current)
   app.use("/api/vocab",vocab)
   app.use("/api/order",order)
+  app.use("/api/offer",offer)
 
   app.use(error);
 };

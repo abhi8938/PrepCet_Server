@@ -38,6 +38,8 @@ const orderSchema=new mongoose.Schema({
     transaction_id:{
         type:mongoose.Schema.ObjectId
     }
+},{
+    timestamps:true
 })
 
 const Order=mongoose.model("Order",orderSchema)
