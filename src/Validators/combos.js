@@ -36,7 +36,7 @@ const comboSchema=new mongoose.Schema({
 const Combo=mongoose.model("Combo",comboSchema)
 
 const included_products_validate={
-    type:Joi.string().valid('LECTURE','MOCK_TEST','CONTENT'),
+    type:Joi.string().valid('LECTURE','TEST','CONTENT'),
     quantity:Joi.number()
 }
 
