@@ -13,7 +13,7 @@ const orderSchema=new mongoose.Schema({
     ide:{
         type:mongoose.Schema.ObjectId
     },
-    productName:{
+    productname:{
         type:String
     },
     category:{
@@ -23,7 +23,7 @@ const orderSchema=new mongoose.Schema({
         type:mongoose.Schema.ObjectId
     },
     quantity:{
-        type:mongoose.Schema.ObjectId
+        type:Number
     },
     expiration:{
         type:Date,
@@ -35,7 +35,7 @@ const orderSchema=new mongoose.Schema({
     discount:{
         type:Number
     },
-    transactionId:{
+    transaction_id:{
         type:mongoose.Schema.ObjectId
     }
 })
@@ -46,15 +46,16 @@ const validate=(order)=>{
     const schema=Joi.object({
         type:Joi.string().valid('COMBO','SINGLE'),
         ide:Joi.string(),
-        productName:Joi.string(),
+        productname:Joi.string(),
         category:Joi.string(),
         subject:Joi.string(),
-        quantity:Joi.string(),
+        quantity:Joi.number(),
         expiration:Joi.date(),
         final_amount:Joi.number(),
         discount:Joi.number(),
-        transactionId:Joi.string()
+        transaction_id:Joi.string()
     })
+    return schema.validate(order)
 }
 
 module.exports={
