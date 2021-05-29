@@ -7,9 +7,14 @@ const subjectSchema=new mongoose.Schema({
         type:String,
         required:true
     },
-    chapters:{
-        type:[String],
-        default:[]
+    cover:{
+        type:String
+    },
+    description:{
+        type:String
+    },
+    category_id:{
+        type:mongoose.Schema.ObjectId,
     },
     DUR:[DUR],
     keywords:[String]
@@ -22,7 +27,9 @@ const Subject=mongoose.model("Subject",subjectSchema)
 const validate=(subject)=>{
     const schema=Joi.object({
         name:Joi.string().required(),
-        chapters: Joi.array().required()
+        cover:Joi.string(),
+        description:Joi.string(),
+        category_id:Joi.string().required(),
     })
 
     return schema.validate(subject)
@@ -31,7 +38,9 @@ const validate=(subject)=>{
 const validateUpdate=(subject)=>{
     const schema=Joi.object({
         name:Joi.string(),
-        chapters: Joi.array()
+        cover:Joi.string(),
+        description:Joi.string(),
+        category_id:Joi.string()
     })
 
     return schema.validate(subject)

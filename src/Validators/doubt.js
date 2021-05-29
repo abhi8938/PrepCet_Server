@@ -12,6 +12,14 @@ const commentSchema = new mongoose.Schema({
     attachments:{
         type:[String],
         default:[]
+    },
+    upvote:{
+        type:[mongoose.Schema.ObjectId],
+        default:[]
+    },
+    downvote:{
+        type:[mongoose.Schema.ObjectId],
+        default:[]
     }
 },{
     timestamps:true
@@ -38,8 +46,8 @@ const doubtSchema=new mongoose.Schema({
     resolved:{
         type:Boolean
     },
-    solution:{
-        type:String
+    solution_id:{
+        type:mongoose.Schema.ObjectId
     },
     comments:{
         type:[commentSchema],

@@ -1,0 +1,4 @@
+{
+    "main":"mongodb+srv://admin_prep:waFHuMrPzPpwbjeq@prepuni.aj9c2.mongodb.net/PrepCETTest?retryWrites=true&w=majority",
+    "test":"mongodb://localhost:27017/prepuni_student"
+}

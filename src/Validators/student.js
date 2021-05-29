@@ -4,66 +4,109 @@ const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const mongoose = require("mongoose");
 
-const studentSchema = new mongoose.Schema(
-  {
-    name: {
-      //done
-      type: String,
-      required: true,
-      minlength: 2,
-      maxlength: 30,
-    },
-    email: {
-      //done
-      type: String,
-      required: true,
-      minlength: 5,
-      unique: true,
-    },
-    contact: {
-      //done
-      type: String,
-      unique: true,
-      minlength: 10,
-      maxlength: 10,
-    },
-    password: {
-      //done
-      type: String,
-      required: true,
-      minlength: 5,
-      maxlength: 1024,
-    },
-    device_token: {
-      //done
-      type: String,
-    },
-    // education: {  //done
-    //   // type: String,
-    //   type: String,
-    //   required: true,
-    //   enum: ['12th pass','1st year','2nd year','3rd year','4th year','pass'],
-    // },
-    isloggedin: {
-      type: Boolean,
-      default: true,
-    },
-    keywords: [String],
-    DUR: [DUR],
-    wallet: {
-      type: Number,
-      default: 0,
-    },
-    transactions: [String],
-    signin_method: {
-      type: String,
-      enum: ["GOOGLE", "FACEBOOK", "EMAIL"],
-    },
+
+const bookMarkSchema=new mongoose.Schema({
+  type:{
+    type:String,
+    enum:['SUBJECT','QUESTION']
   },
-  {
-    timestamps: true,
+  ide:{
+    type:mongoose.Schema.ObjectId
+  },
+  notes:{
+    type:String
   }
-);
+},{
+  timestamps:true
+})
+
+const transactionSchena=new mongoose.Schema({
+  method:{
+    type:String,
+    enum:['CREDIT','DEBIT'],
+    required:true
+  },
+  amount:{
+    type:Number,
+    required:true
+  },
+  name:{
+    type:String
+  }
+})
+
+const studentSchema = new mongoose.Schema({
+  name: {       //done
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 30,
+  },
+  isAdmin:{
+    type:Boolean,
+    default:false
+  },
+  email: {    //done
+    type: String,
+    required: true,
+    minlength: 5,
+    unique: true,
+  },
+  contact: {  //done
+    type: String,
+    unique:true,
+    minlength: 10,
+    maxlength: 10,
+  },
+  gender: {     //done
+    type: String,
+    // required: true,
+    enum: ["MALE", "FEMALE", "OTHERS", "RATHER NOT SAY"],
+  },
+  dob: {      //done
+    type: Date,
+    // required: true,
+  },
+  password: {   //done
+    type: String,
+    required: true,
+    minlength: 5,
+    maxlength: 1024,
+  },
+  device_token: {  //done
+    type: String,
+  },
+  education: {  //done
+    // type: String,
+    type: String,
+    // required: true,
+    enum: ['12th pass','1st year','2nd year','3rd year','4th year','pass'],
+  },
+  user_name: {    //dome
+    type: String,
+    unique: true,
+    // required: true,
+    maxlength: 30,
+  },
+  isloggedin:{
+    type:Boolean,
+    default:true
+  },
+  keywords: [String],
+  DUR: [DUR],
+  wallet:{
+    type:Number,
+    default:0
+  },
+  credits:{
+    type:Number,
+    default:0
+  },
+  bookmarks:[bookMarkSchema],
+  transactions:[transactionSchena]
+},{
+  timestamps:true
+});
 
 studentSchema.method("generateAuthToken", function () {
   const token = jwt.sign(

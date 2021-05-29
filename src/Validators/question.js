@@ -3,31 +3,27 @@ const Joi=require('joi')
 const mongoose=require('mongoose')
 
 const questionSchema=new mongoose.Schema({
-    subject_name:{
-        type:String,
-        required:true,
-    },
-    chapter_id:{
-        type:mongoose.Schema.ObjectId
-    },
-    subject_id:{
-        type:mongoose.Schema.ObjectId
-    },
     question:{
         type:String
     },
+    attachments:[String],
     options:[{
         option:{
             type:String
         },
         correct:{
             type:Boolean,
+        },
+        type:{
+            type:String,
+            enum:['file','text']
         }
     }],
     solution:{
         type:String
     },
-    DUR:[DUR]
+    DUR:[DUR],
+    keywords: [String],
 },{
     timestamps:true
 })
@@ -41,6 +37,7 @@ const validate=(question)=>{
         question:Joi.string().required(),
         options:Joi.array().required(),
         solution:Joi.string().required(),
+        attachments:Joi.array()
     })
 
     return schema.validate(question)
@@ -53,6 +50,7 @@ const validateUpdate=(question)=>{
         question:Joi.string(),
         options:Joi.array(),
         solution:Joi.string(),
+        attachments:Joi.array()
     })
 
     return schema.validate(question)
