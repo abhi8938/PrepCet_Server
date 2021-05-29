@@ -16,6 +16,9 @@ const lectureSchema=new mongoose.Schema({
         type:Number,
         default:0
     },
+    cover:{
+        type:String
+    },
     DUR:[DUR],
     daily:{
         type:Boolean,

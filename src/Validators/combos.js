@@ -16,7 +16,7 @@ const comboSchema=new mongoose.Schema({
     included_products:[{
         type:{
             type:String,
-            enum:['LECTURE','MOCK_TEST','CONTENT']
+            enum:['LECTURE','TEST','CONTENT']
         },
         quantity:{
             type:Number
