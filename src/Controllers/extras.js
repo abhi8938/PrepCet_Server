@@ -199,6 +199,19 @@ const post_mail = async (req, res) => {
   }
 };
 
+const download_file = async(req, res) => {
+  var fileName = req.params.name;
+  // const decoded = jwt.verify(fileName, config.get("jwtPrivateKey"));
+  // // console.log(decoded)
+  // fileName=decoded.name
+  // // console.log(fileName)
+  res.download(`uploads/${fileName}`, (err) => {
+    if (err) {
+      throw new Error("File can not be downloaded: " + err.details);
+    }
+  });
+  res.status(200).send("Paper Downloaded")
+};
 /*
  * *
  * *
@@ -213,4 +226,6 @@ module.exports = {
   get_legal,
   post_bmessage,
   update_bmessage,
-};
+  download_file
+}
+

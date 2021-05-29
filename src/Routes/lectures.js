@@ -15,9 +15,14 @@ let upload = multer({ dest: "uploads/"});
 
 router.post("/",
     [auth,admin],
-    upload.fields([{name:"link",maxCount:1}]),
+    upload.fields([{name:"link",maxCount:1},{name:"cover",maxCount:1}]),
     async(req,res)=>{
-        req.body.link=req.files.link[0].filename
+        if(Object.keys(req.files).length!==undefined){
+            if(Object.keys(req.files).length!==0){
+                if("link" in req.files) req.body.link=req.files.link[0].filename
+                if("cover" in req.files) req.body.cover=req.files.cover[0].filename
+            }
+        }
         await post_lecture(req,res)
     }
 )
