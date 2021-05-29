@@ -11,6 +11,9 @@ const Pack = mongoose.model(
         required: true,
         min: 0,
       },
+      name:{
+        type:String,
+      },
       features: [
         {
           feature: {
@@ -52,6 +55,7 @@ const validate = (_package) => {
     type: Joi.string().required(),
     life: Joi.date().required(),
     discount: Joi.number(),
+    name:Joi.string(),
   });
 
   return schema.validate(_package);
@@ -71,6 +75,7 @@ const validateUpdate = (_package) => {
     type: Joi.string(),
     life: Joi.date(),
     discount: Joi.number(),
+    name:Joi.string(),
   });
 
   return schema.validate(_package);

@@ -9,6 +9,8 @@ const {
   reset_password,
   update_student,
   change_password,
+  apicredits,
+  apiwallet
 } =require("../Controllers/students");
 
 const auth=require("../Middlewares/auth")
@@ -42,4 +44,15 @@ router.post(
   async (req, res) => await logoutfromdevice(req, res)
 );
 
+router.post(
+  "/credits",
+  auth,
+  async(req,res)=>await apicredits(req,res)
+)
+
+router.post(
+  "/wallet",
+  auth,
+  async(req,res)=>await apiwallet(req,res)
+)
 module.exports=router

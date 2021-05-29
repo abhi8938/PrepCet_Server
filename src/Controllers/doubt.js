@@ -6,6 +6,7 @@ const {
 }=require("../Validators/doubt")
 const { handleUpdate } =require ("../Services/algo");
 const {Student}=require("../Validators/student")
+const { ObjectId } = require('mongodb');
 
 const upload_doubt=async(req,res)=>{
     const {error}=validate(req.body)
@@ -61,19 +62,16 @@ const add_comment=async(req,res)=>{
     let doubt=await Doubt.findById(req.params.id)
     if(!doubt) throw new Error("There is no doubts based on this ID or you are not allowed to update this")
 
-    doubts=doubt.comments
-    doubts.push({
+    
+
+    comment={
         STID:req.user._id,
         attachments:req.body.attachments,
         comment:req.body.comment
-    })
-    body={
-        comments:doubts
     }
+    let changedDoubt=await Doubt.findByIdAndUpdate(req.params.id,{$push:{comments:comment}},{new:true})
 
-    handleUpdate(doubt,body)
-    await doubt.save()
-    res.status(200).send(doubt)
+    res.status(200).send(changedDoubt)
 }
 
 const delete_comment=async(req,res)=>{
@@ -84,6 +82,11 @@ const delete_comment=async(req,res)=>{
     if(!doubt) throw new Error("There is no doubts based on this ID or you are not allowed to update this")
 
     let comments=doubt.comments
+    comments.forEach(comment=>{
+        if(String(comment._id)===req.params.ide){
+            if(!(String(comment.STID)==req.user._id)) throw new Error("You are not allowed to delete this comment")
+        }
+    })
     comments = comments.filter(item => String(item._id) !== req.params.ide)
 
     body={
@@ -95,11 +98,57 @@ const delete_comment=async(req,res)=>{
     res.status(200).send(doubt)
 }
 
+const handleVotes=async(req,res)=>{
+    let student=await Student.findById(req.user._id)
+    if(!student) throw new Error("There is no user based on this ID")
+
+    let doubt=await Doubt.findById(req.params.id)
+    if(!doubt) throw new Error("There is no doubts based on this ID or you are not allowed to update this")
+
+    let method=req.body.method
+
+    doubt.comments.forEach(comment=>{
+        if(String(comment._id)===req.params.ide){
+            comment[method].forEach(ele=>{
+                if(ele==req.user._id) throw new Error(`You aldredy ${method}d to comment`)
+            })
+            console.log(comment,comment[method],method)
+            comment[method].push(req.user._id)
+        }
+    })
+    await doubt.save()
+    res.status(200).send(doubt)
+}
+
+const deleteVotes=async(req,res)=>{
+    let student=await Student.findById(req.user._id)
+    if(!student) throw new Error("There is no user based on this ID")
+
+    let doubt=await Doubt.findById(req.params.id)
+    if(!doubt) throw new Error("There is no doubts based on this ID or you are not allowed to update this")
+
+    let method=req.body.method
+
+    doubt.comments.forEach(comment=>{
+        if(String(comment._id)===req.params.ide){
+            comment[method].forEach((ele,index)=>{
+                if(ele==req.user._id) {
+                    comment[method].splice(index,1)
+                }
+            })
+        }
+    })
+    await doubt.save()
+    res.status(200).send(doubt)
+}
+
 module.exports={
     upload_doubt,
     update_doubt,
     get_doubts,
     get_doubt,
     add_comment,
-    delete_comment
+    delete_comment,
+    handleVotes,
+    deleteVotes
 }

@@ -7,12 +7,15 @@ const {
 
 const express=require("express")
 const multer=require("multer")
+const auth=require("../Middlewares/auth")
+const admin=require("../Middlewares/admin")
 
 const router=express.Router()
 let upload = multer({ dest: "uploads/"});
 
 router.post(
     "/",
+    [auth,admin],
     upload.fields([{ name: "cover", maxCount: 1 }]),
     async (req,res)=>{
 
@@ -27,6 +30,7 @@ router.get("/:id",async(req,res)=>await get_category(req,res))
 
 router.put(
     "/:id",
+    [auth,admin],
     upload.fields([{ name: "cover", maxCount: 1 }]),
     async (req,res)=>{
         if(Object.keys(req.files).length!==undefined){

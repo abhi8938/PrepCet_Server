@@ -4,12 +4,46 @@ const jwt=require("jsonwebtoken")
 const Joi=require('joi')
 const mongoose=require('mongoose')
 
+const bookMarkSchema=new mongoose.Schema({
+  type:{
+    type:String,
+    enum:['SUBJECT','QUESTION']
+  },
+  ide:{
+    type:mongoose.Schema.ObjectId
+  },
+  notes:{
+    type:String
+  }
+},{
+  timestamps:true
+})
+
+const transactionSchena=new mongoose.Schema({
+  method:{
+    type:String,
+    enum:['CREDIT','DEBIT'],
+    required:true
+  },
+  amount:{
+    type:Number,
+    required:true
+  },
+  name:{
+    type:String
+  }
+})
+
 const studentSchema = new mongoose.Schema({
   name: {       //done
     type: String,
     required: true,
     minlength: 2,
     maxlength: 30,
+  },
+  isAdmin:{
+    type:Boolean,
+    default:false
   },
   email: {    //done
     type: String,
@@ -25,12 +59,12 @@ const studentSchema = new mongoose.Schema({
   },
   gender: {     //done
     type: String,
-    required: true,
+    // required: true,
     enum: ["MALE", "FEMALE", "OTHERS", "RATHER NOT SAY"],
   },
   dob: {      //done
     type: Date,
-    required: true,
+    // required: true,
   },
   password: {   //done
     type: String,
@@ -44,13 +78,13 @@ const studentSchema = new mongoose.Schema({
   education: {  //done
     // type: String,
     type: String,
-    required: true,
+    // required: true,
     enum: ['12th pass','1st year','2nd year','3rd year','4th year','pass'],
   },
   user_name: {    //dome
     type: String,
     unique: true,
-    required: true,
+    // required: true,
     maxlength: 30,
   },
   isloggedin:{
@@ -63,7 +97,12 @@ const studentSchema = new mongoose.Schema({
     type:Number,
     default:0
   },
-  transactions:[String]
+  credits:{
+    type:Number,
+    default:0
+  },
+  bookmarks:[bookMarkSchema],
+  transactions:[transactionSchena]
 },{
   timestamps:true
 });
