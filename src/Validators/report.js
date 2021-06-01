@@ -6,11 +6,14 @@ const reportSchema=new mongoose.Schema({
     type:{
         type:String,
         required: true,
-        enum:['CHAPTER','SUBJECT','PRACTICE']
+        enum:['TEST','PYP']
     },
     duration:{
         type:Number,
         required: true
+    },
+    categoryid:{
+        type:mongoose.Schema.ObjectId
     },
     subjectid:{
         type:mongoose.Schema.ObjectId
@@ -18,12 +21,15 @@ const reportSchema=new mongoose.Schema({
     chapterid:{
         type:mongoose.Schema.ObjectId
     },
+    ide:{
+        type:mongoose.Schema.ObjectId
+    },
     results:[{
         question:{
             type:mongoose.Schema.ObjectId
         },
-        correct:{
-            type:Boolean
+        selected:{
+            type:Number
         }
     }],
     DUR:[DUR],
@@ -38,6 +44,15 @@ const reportSchema=new mongoose.Schema({
     total_marks:{
         type:Number,
         required:true
+    },
+    rank:{
+        type:Number
+    },
+    test_duration:{
+        type:Number
+    },
+    time_taken:{
+        type:Number
     }
 },{
     timestamps:true
@@ -47,13 +62,18 @@ const Report=mongoose.model("Result",reportSchema)
 
 const validate=(result)=>{
     const schema=Joi.object({
-        type:Joi.string().valid('CHAPTER','SUBJECT','PRACTICE'),
+        type:Joi.string().valid('TEST','PYP'),
         duration:Joi.number().required(),
-        subjectid:Joi.string().required(),
-        chapterid:Joi.string().required(),
+        subjectid:Joi.string(),
+        chapterid:Joi.string(),
         results:Joi.array().required(),
-        maximum_marks:Joi.number().required(),
+        maximum_marks:Joi.number(),
         total_marks:Joi.number().required(),
+        ide:Joi.string(),
+        categoryid:Joi.string(),
+        rank:Joi.number(),
+        test_duration:Joi.number(),
+        time_taken:Joi.number()
     })
 
     return schema.validate(result)
@@ -61,13 +81,18 @@ const validate=(result)=>{
 
 const validateUpdate=(result)=>{
     const schema=Joi.object({
-        type:Joi.string(),
+        type:Joi.string().valid('TEST','PYP'),
         duration:Joi.number(),
         subjectid:Joi.string(),
         chapterid:Joi.string(),
         results:Joi.array(),
         maximum_marks:Joi.number(),
         total_marks:Joi.number(),
+        ide:Joi.string(),
+        categoryid:Joi.string(),
+        rank:Joi.number(),
+        test_duration:Joi.number(),
+        time_taken:Joi.number()
     })
 
     return schema.validate(result)
