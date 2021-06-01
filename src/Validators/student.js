@@ -4,57 +4,26 @@ const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const mongoose = require("mongoose");
 
-const bookMarkSchema=new mongoose.Schema({
-  type:{
-    type:String,
-    enum:['SUBJECT','QUESTION']
+const bookMarkSchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      enum: ["SUBJECT", "QUESTION"],
+    },
+    ide: {
+      type: mongoose.Schema.ObjectId,
+    },
+    notes: {
+      type: String,
+    },
   },
-  ide:{
-    type:mongoose.Schema.ObjectId
-  },
-  notes:{
-    type:String
-  }
-},{
-  timestamps:true
-})
-
-const transactionSchena=new mongoose.Schema({
-  method:{
-    type:String,
-    enum:['CREDIT','DEBIT'],
-    required:true
-  },
-  amount:{
-    type:Number,
-    required:true
-  },
-  name:{
-    type:String
-  },
-  ide:{
-    type:mongoose.Schema.ObjectId
-
+  {
+    timestamps: true,
   }
 );
 
-const historySchema=new mongoose.Schema({
-  type:{
-    type:String
-  },
-  ide:{
-    type:mongoose.Schema.ObjectId
-  },
-  notes:{
-    type:String
-  }
-},{
-  timestamps:true
-})
-
-
-const studentSchema = new mongoose.Schema({
-  name: {       //done
+const transactionSchena = new mongoose.Schema({
+  method: {
     type: String,
     enum: ["CREDIT", "DEBIT"],
     required: true,
@@ -66,13 +35,27 @@ const studentSchema = new mongoose.Schema({
   name: {
     type: String,
   },
-  bookmarks:[bookMarkSchema],
-  transactions:[transactionSchena],
-  history:[historySchema]
-},{
-  timestamps:true
-
+  ide: {
+    type: mongoose.Schema.ObjectId,
+  },
 });
+
+const historySchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+    },
+    ide: {
+      type: mongoose.Schema.ObjectId,
+    },
+    notes: {
+      type: String,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const studentSchema = new mongoose.Schema(
   {
@@ -160,6 +143,7 @@ const studentSchema = new mongoose.Schema(
     },
     bookmarks: [bookMarkSchema],
     transactions: [transactionSchena],
+    history: [historySchema],
     signin_method: {
       type: String,
       enum: ["GOOGLE", "FACEBOOK", "EMAIL"],
@@ -232,33 +216,33 @@ const validatePassword = (student) => {
   return schema.validate(student);
 };
 
-const validateBookamark=(bookmark)=>{
-  const schema=Joi.object({
-    type:Joi.string().valid('SUBJECT','QUESTION'),
-    ide:Joi.string(),
-    notes:Joi.string()
-  })
-  return schema.validate(bookmark)
-}
+const validateBookamark = (bookmark) => {
+  const schema = Joi.object({
+    type: Joi.string().valid("SUBJECT", "QUESTION"),
+    ide: Joi.string(),
+    notes: Joi.string(),
+  });
+  return schema.validate(bookmark);
+};
 
-const validateHistory=(history)=>{
-  const schema=Joi.object({
-    type:Joi.string(),
-    ide:Joi.string(),
-    notes:Joi.string()
-  })
-  return schema.validate(history)
-}
+const validateHistory = (history) => {
+  const schema = Joi.object({
+    type: Joi.string(),
+    ide: Joi.string(),
+    notes: Joi.string(),
+  });
+  return schema.validate(history);
+};
 
-const validatetransitions=(tran)=>{
-  const schema=Joi.object({
-    method:Joi.string(),
-    amount:Joi.number(),
-    name:Joi.string(),
-    ide:Joi.string()
-  })
-  return schema.validate(tran)
-}
+const validatetransitions = (tran) => {
+  const schema = Joi.object({
+    method: Joi.string(),
+    amount: Joi.number(),
+    name: Joi.string(),
+    ide: Joi.string(),
+  });
+  return schema.validate(tran);
+};
 
 // export default Student;
 module.exports = {
@@ -269,6 +253,5 @@ module.exports = {
   Student,
   validateBookamark,
   validatetransitions,
-  validateHistory
-}
-
+  validateHistory,
+};
