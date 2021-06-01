@@ -4,8 +4,12 @@ const {
   validateAuth,
   validateUpdate,
   validatePassword,
-} = require("../Validators/student");
-const { generateKeywords, handleUpdate } = require("../Services/algo");
+  validateBookamark,
+  validatetransitions,
+  validateHistory
+} =require("../Validators/student");
+const { generateKeywords, handleUpdate } =require ("../Services/algo");
+
 
 const { BMessage } = require("../Validators/extra");
 const { Subscript } = require("../Validators/subscription");
@@ -249,6 +253,132 @@ const apiwallet=async(req,res)=>{
   res.status(200).send(student)
 }
 
+const addbookmark=async(req,res)=>{
+  const {error}=validateBookamark(req.body)
+  if(error) throw new Error(error.details[0].message)
+
+  let student=await Student.findById(req.user._id)
+  if(!student) throw new Error("This is an ivalid token no user in this email id")  
+
+  student.bookmarks.push(req.body)
+  student=await student.save()
+  res.status(200).send(student)
+}
+
+const getBookmark=async(req,res)=>{
+  let student=await Student.findById(req.user._id)
+  if(!student) throw new Error("This is an ivalid token no user in this email id")
+
+  let done=0
+  student.bookmarks.forEach(bookmark=>{
+    if(String(bookmark._id)===req.params.id) {
+      res.status(200).send(bookmark)
+      done=1
+    }
+  })
+
+  if(done==0) throw new Error("They are no bookmarks based on this ID")
+}
+
+const getBookmarks=async(req,res)=>{
+  let student=await Student.findById(req.user._id)
+  if(!student) throw new Error("This is an ivalid token no user in this email id")  
+
+  res.status(200).send(student.bookmarks)
+}
+
+const delBookmarks=async(req,res)=>{
+  let student=await Student.findById(req.user._id)
+  if(!student) throw new Error("This is an ivalid token no user in this email id") 
+  beforeLen=student.bookmarks.length
+
+  student.bookmarks=student.bookmarks.filter(item=>String(item._id)!==req.params.id)
+  student=await student.save()
+  if(beforeLen===student.bookmarks.length) throw new Error("There are no bookamrks based on this ID")
+
+  res.status(200).send(student.bookmarks)
+}
+
+const uploadTranscations=async(req,res)=>{
+  const {error}=validatetransitions(req.body)
+  if(error) throw new Error(error.details[0].message)
+
+  let student=await Student.findById(req.user._id)
+  if(!student) throw new Error("This is an ivalid token no user in this email id")    
+
+  student.transactions.push(req.body)
+  student=await student.save()
+  res.status(200).send(student)
+}
+
+const readTransactions=async(req,res)=>{
+  let student=await Student.findById(req.user._id)
+  if(!student) throw new Error("This is an ivalid token no user in this email id")    
+  res.status(200).send(student.transactions)
+}
+
+const getTransaction=async(req,res)=>{
+  let student=await Student.findById(req.user._id)
+  if(!student) throw new Error("This is an ivalid token no user in this email id")
+
+  let done=0
+  student.transactions.forEach(transaction=>{
+    if(String(transaction._id)===req.params.id) {
+      res.status(200).send(transaction)
+      done=1
+    }
+  })
+
+  if(done==0) throw new Error("They are no transactions based on this ID")
+}
+
+const post_history=async (req,res)=>{
+  const {error}=validateHistory(req.body)
+  if(error) throw new Error(error.details[0].message)
+
+  let student=await Student.findById(req.user._id)
+  if(!student) throw new Error("This is an ivalid token no user in this email id")
+
+  student.history.push(req.body)
+  student=await student.save()
+
+  res.status(200).send(student)
+}
+
+const get_histories=async(req,res)=>{
+  let student=await Student.findById(req.user._id)
+  if(!student) throw new Error("This is an ivalid token no user in this email id")
+
+  res.status(200).send(student.history)
+}
+
+const get_history=async (req,res)=>{
+  let student=await Student.findById(req.user._id)
+  if(!student) throw new Error("This is an ivalid token no user in this email id")
+
+  let done=0
+  student.history.forEach(his=>{
+    if(String(his._id)===req.params.id) {
+      res.status(200).send(his)
+      done=1
+    }
+  })
+
+  if(done==0) throw new Error("They are no history based on this ID")  
+}
+
+const del_history=async (req,res)=>{
+  let student=await Student.findById(req.user._id)
+  if(!student) throw new Error("This is an ivalid token no user in this email id") 
+  beforeLen=student.history.length
+
+  student.history=student.history.filter(item=>String(item._id)!==req.params.id)
+  student=await student.save()
+  if(beforeLen===student.history.length) throw new Error("There are no history based on this ID")
+
+  res.status(200).send(student.history)
+}
+
 module.exports = {
   logoutfromdevice,
   get_all,
@@ -262,5 +392,17 @@ module.exports = {
   apicredits,
   creditUpdate,
   apiwallet,
-  walletUpdate
+  walletUpdate,
+  addbookmark,
+  getBookmarks,
+  delBookmarks,
+  uploadTranscations,
+  readTransactions,
+  getBookmark,
+  getTransaction,
+  post_history,
+  get_histories,
+  get_history,
+  del_history
 }
+

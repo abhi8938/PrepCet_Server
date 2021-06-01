@@ -4,26 +4,57 @@ const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const mongoose = require("mongoose");
 
-const bookMarkSchema = new mongoose.Schema(
-  {
-    type: {
-      type: String,
-      enum: ["SUBJECT", "QUESTION"],
-    },
-    ide: {
-      type: mongoose.Schema.ObjectId,
-    },
-    notes: {
-      type: String,
-    },
+const bookMarkSchema=new mongoose.Schema({
+  type:{
+    type:String,
+    enum:['SUBJECT','QUESTION']
   },
-  {
-    timestamps: true,
+  ide:{
+    type:mongoose.Schema.ObjectId
+  },
+  notes:{
+    type:String
+  }
+},{
+  timestamps:true
+})
+
+const transactionSchena=new mongoose.Schema({
+  method:{
+    type:String,
+    enum:['CREDIT','DEBIT'],
+    required:true
+  },
+  amount:{
+    type:Number,
+    required:true
+  },
+  name:{
+    type:String
+  },
+  ide:{
+    type:mongoose.Schema.ObjectId
+
   }
 );
 
-const transactionSchena = new mongoose.Schema({
-  method: {
+const historySchema=new mongoose.Schema({
+  type:{
+    type:String
+  },
+  ide:{
+    type:mongoose.Schema.ObjectId
+  },
+  notes:{
+    type:String
+  }
+},{
+  timestamps:true
+})
+
+
+const studentSchema = new mongoose.Schema({
+  name: {       //done
     type: String,
     enum: ["CREDIT", "DEBIT"],
     required: true,
@@ -35,6 +66,12 @@ const transactionSchena = new mongoose.Schema({
   name: {
     type: String,
   },
+  bookmarks:[bookMarkSchema],
+  transactions:[transactionSchena],
+  history:[historySchema]
+},{
+  timestamps:true
+
 });
 
 const studentSchema = new mongoose.Schema(
@@ -195,6 +232,34 @@ const validatePassword = (student) => {
   return schema.validate(student);
 };
 
+const validateBookamark=(bookmark)=>{
+  const schema=Joi.object({
+    type:Joi.string().valid('SUBJECT','QUESTION'),
+    ide:Joi.string(),
+    notes:Joi.string()
+  })
+  return schema.validate(bookmark)
+}
+
+const validateHistory=(history)=>{
+  const schema=Joi.object({
+    type:Joi.string(),
+    ide:Joi.string(),
+    notes:Joi.string()
+  })
+  return schema.validate(history)
+}
+
+const validatetransitions=(tran)=>{
+  const schema=Joi.object({
+    method:Joi.string(),
+    amount:Joi.number(),
+    name:Joi.string(),
+    ide:Joi.string()
+  })
+  return schema.validate(tran)
+}
+
 // export default Student;
 module.exports = {
   validateAuth,
@@ -202,4 +267,8 @@ module.exports = {
   validate,
   validatePassword,
   Student,
-};
+  validateBookamark,
+  validatetransitions,
+  validateHistory
+}
+

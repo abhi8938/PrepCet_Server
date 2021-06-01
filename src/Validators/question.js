@@ -6,6 +6,9 @@ const questionSchema=new mongoose.Schema({
     question:{
         type:String
     },
+    testpaper_id:{
+        type:mongoose.Schema.ObjectId
+    },
     attachments:[String],
     options:[{
         option:{
@@ -37,7 +40,8 @@ const validate=(question)=>{
         question:Joi.string().required(),
         options:Joi.array().required(),
         solution:Joi.string().required(),
-        attachments:Joi.array()
+        attachments:Joi.array(),
+        testpaper_id:Joi.string()
     })
 
     return schema.validate(question)
@@ -50,7 +54,8 @@ const validateUpdate=(question)=>{
         question:Joi.string(),
         options:Joi.array(),
         solution:Joi.string(),
-        attachments:Joi.array()
+        attachments:Joi.array(),
+        testpaper_id:Joi.string()
     })
 
     return schema.validate(question)
