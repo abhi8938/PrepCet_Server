@@ -23,10 +23,9 @@ require("../Services/googleAuth")
 require("../Services/facebookAuth")
 const {Student}=require("../Validators/student")
 
+
 const router = express.Router();
 let upload = multer({ dest: "uploads/" });
-
-
 
 router.get(
   "/bmessage",
@@ -45,7 +44,6 @@ router.post(
 //   [auth, admin],
 //   async (req, res) => await update_bmessage(req, res)
 // );
-
 
 router.get("/legals/:id", auth, async (req, res) => await get_legal(req, res));
 
@@ -67,40 +65,13 @@ router.post("/sendMail", auth, async (req, res) => await post_mail(req, res));
 
 
 
+
 // router.use(cookieSession({
 //   name: 'tuto-session',
 //   keys: ['key1', 'key2']
 // }))
 
-// const isLoggedIn = (req, res, next) => {
-//   if (req.user) {
-//       next();
-//   } else {
-//       res.sendStatus(401);
-//   }
-// }
-
-// router.use(passport.initialize());
-// router.use(passport.session());
-
-// router.get('/failed', async(req, res) =>await res.send('You Failed to log in!'))
-
-// router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-// router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/api/extras/failed' }),
-//   async function(req, res) {
-//     res.status(200).send(req.user._json.authtoken)
-//   }
-// );
-
-// router.get('/facebook', passport.authenticate('facebook'));
-
-// router.get('/facebook/callback',passport.authenticate('facebook', { failureRedirect: '/api/extras/failed' }),
-//   async function(req,res)  {
-//     res.status(200).send(req.user._json)
-//   }
-// );
-
 router.get("/files/:name", async (req, res) => await download_file(req, res));
 
-module.exports=router;
+
+module.exports = router;
