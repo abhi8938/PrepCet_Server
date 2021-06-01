@@ -31,8 +31,26 @@ const transactionSchena=new mongoose.Schema({
   },
   name:{
     type:String
+  },
+  ide:{
+    type:mongoose.Schema.ObjectId
   }
 })
+
+const historySchema=new mongoose.Schema({
+  type:{
+    type:String
+  },
+  ide:{
+    type:mongoose.Schema.ObjectId
+  },
+  notes:{
+    type:String
+  }
+},{
+  timestamps:true
+})
+
 
 const studentSchema = new mongoose.Schema({
   name: {       //done
@@ -102,7 +120,8 @@ const studentSchema = new mongoose.Schema({
     default:0
   },
   bookmarks:[bookMarkSchema],
-  transactions:[transactionSchena]
+  transactions:[transactionSchena],
+  history:[historySchema]
 },{
   timestamps:true
 });
@@ -164,11 +183,42 @@ const validatePassword=(student)=>{
   return schema.validate(student)
 }
 
+const validateBookamark=(bookmark)=>{
+  const schema=Joi.object({
+    type:Joi.string().valid('SUBJECT','QUESTION'),
+    ide:Joi.string(),
+    notes:Joi.string()
+  })
+  return schema.validate(bookmark)
+}
+
+const validateHistory=(history)=>{
+  const schema=Joi.object({
+    type:Joi.string(),
+    ide:Joi.string(),
+    notes:Joi.string()
+  })
+  return schema.validate(history)
+}
+
+const validatetransitions=(tran)=>{
+  const schema=Joi.object({
+    method:Joi.string(),
+    amount:Joi.number(),
+    name:Joi.string(),
+    ide:Joi.string()
+  })
+  return schema.validate(tran)
+}
+
 // export default Student;
 module.exports={
   validateAuth,
   validateUpdate,
   validate,
   validatePassword,
-  Student
+  Student,
+  validateBookamark,
+  validatetransitions,
+  validateHistory
 }
