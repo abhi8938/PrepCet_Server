@@ -1,5 +1,6 @@
 const { Subject, validate, validateUpdate } = require("../Validators/subject");
 const { generateKeywords, handleUpdate } = require("../Services/algo");
+const { sendNotification } = require("../Services/algo");
 
 const post_subject = async (req, res) => {
   if (req.user.isAdmin == false)
@@ -18,6 +19,11 @@ const post_subject = async (req, res) => {
 const get_subjects = async (req, res) => {
   console.log("query_subject", req.query);
   const subjects = await Subject.find(req.query).sort("name");
+  sendNotification(
+    "Test from Server",
+    "This is a test message from prepCET server",
+    req.user._id
+  );
   res.status(200).send(subjects);
 };
 

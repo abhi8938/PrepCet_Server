@@ -202,6 +202,7 @@ const validateAuth = (student) => {
   const schema = Joi.object({
     id: Joi.string().min(5).required(),
     password: Joi.string().min(5).max(1024).required(),
+    device_token: Joi.string().required(),
   });
 
   return schema.validate(student);
