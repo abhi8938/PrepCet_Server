@@ -123,8 +123,6 @@ const studentSchema = new mongoose.Schema(
     user_name: {
       //dome
       type: String,
-      unique: true,
-      // required: true,
       maxlength: 30,
     },
     isloggedin: {
